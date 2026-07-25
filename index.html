@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大美临夏 · 千年河州 — 临夏回族自治州文旅官网</title>
+<meta name="description" content="临夏回族自治州官方文旅平台 — 彩陶故里、花儿之乡。">
+<style>
+:root {
+  --peony: #8B1A4A; --peony-light: #A52D5C; --peony-soft: #F5E8EE;
+  --river: #1A6B5A; --river-light: #2D8B7A; --river-soft: #E8F5F1;
+  --loess: #C4955A; --loess-light: #D4A76A; --loess-soft: #FDF6ED;
+  --cream: #FAF7F2; --light: #F0EDE8; --brown: #5C3D2E; --text: #2C2416;
+  --text-light: #6B5D4E; --white: #FEFDFB;
+  --shadow-sm: 0 1px 3px rgba(44,36,22,.06);
+  --shadow-md: 0 4px 20px rgba(44,36,22,.08);
+  --shadow-lg: 0 12px 40px rgba(44,36,22,.12);
+  --radius-sm: 6px; --radius: 12px; --radius-lg: 20px;
+  --nav-h: 64px; --transition: 0.35s cubic-bezier(.25,.46,.45,.94);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;color:var(--text);background:var(--cream);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.modal-open{overflow:hidden}
+img,video{max-width:100%;display:block;object-fit:cover}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;font-family:inherit}
+ul{list-style:none}
+
+/* Audio */
+.audio-control{position:fixed;bottom:32px;left:32px;z-index:999;width:44px;height:44px;border-radius:50%;background:var(--white);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--transition);font-size:1.1rem;color:var(--peony)}
+.audio-control:hover{background:var(--peony-soft);transform:scale(1.08)}
+.audio-control.muted{color:var(--text-light);opacity:.6}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);background:rgba(254,253,251,.92);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid rgba(139,26,74,.08);transition:all .3s}
+.nav.scrolled{box-shadow:var(--shadow-md)}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;height:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:1.35rem;font-weight:700;color:var(--peony);letter-spacing:.03em}
+.nav-logo span{color:var(--river);font-weight:400;font-size:.85rem;margin-left:6px}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-item{position:relative;padding:8px 16px;border-radius:var(--radius-sm);font-size:.92rem;color:var(--text);transition:all .2s;cursor:pointer}
+.nav-item:hover{color:var(--peony);background:var(--peony-soft)}
+.nav-item.active{color:var(--peony);font-weight:600}
+.nav-dropdown{position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(8px);background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:8px 0;min-width:140px;opacity:0;visibility:hidden;transition:all .25s;z-index:100}
+.nav-item:hover .nav-dropdown{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.nav-dropdown a{display:block;padding:10px 20px;font-size:.88rem;color:var(--text-light);transition:all .15s}
+.nav-dropdown a:hover{color:var(--peony);background:var(--peony-soft)}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px}
+.nav-toggle span{display:block;width:24px;height:2px;background:var(--text);border-radius:1px;transition:all .3s}
+
+/* Hero */
+.hero{position:relative;height:100vh;min-height:600px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.hero-slides{position:absolute;inset:0}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s;background-size:cover;background-position:center}
+.hero-slide.active{opacity:1}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(44,36,22,.25) 0%,rgba(44,36,22,.6) 100%)}
+.hero-content{position:relative;z-index:2;text-align:center;color:#fff;padding:0 24px;max-width:880px}
+.hero-content h1{font-size:clamp(2.2rem,5.5vw,4.5rem);font-weight:800;letter-spacing:.08em;margin-bottom:.3em;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+.hero-content h1 .sub{display:block;font-size:.38em;font-weight:400;letter-spacing:.15em;margin-top:12px;opacity:.88}
+.hero-content p{font-size:1.15rem;opacity:.92;letter-spacing:.06em;margin-bottom:2.2em}
+.hero-decor{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:2em}
+.hero-decor::before,.hero-decor::after{content:"";width:70px;height:1px;background:rgba(255,255,255,.4)}
+.hero-decor span{font-size:1.6rem;opacity:.75}
+.hero-btn{display:inline-block;padding:15px 52px;border-radius:50px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);color:#fff;font-size:1.02rem;letter-spacing:.06em;backdrop-filter:blur(10px);transition:all var(--transition)}
+.hero-btn:hover{background:var(--peony);border-color:var(--peony);transform:translateY(-2px)}
+.hero-indicators{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:3}
+.hero-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:all var(--transition);border:2px solid transparent}
+.hero-dot.active{background:#fff;transform:scale(1.35);border-color:rgba(255,255,255,.5)}
+.hero-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:1.3rem;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);transition:all var(--transition)}
+.hero-arrow:hover{background:rgba(139,26,74,.5);border-color:rgba(255,255,255,.4)}
+.hero-arrow.prev{left:24px}.hero-arrow.next{right:24px}
+
+/* Section */
+.section{padding:100px 32px;max-width:1280px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:64px}
+.section-tag{display:inline-block;padding:5px 18px;border-radius:50px;font-size:.8rem;letter-spacing:.1em;font-weight:500;margin-bottom:16px}
+.section-tag.peony{background:var(--peony-soft);color:var(--peony)}
+.section-tag.river{background:var(--river-soft);color:var(--river)}
+.section-tag.loess{background:var(--loess-soft);color:var(--brown)}
+.section-title{font-size:clamp(1.6rem,3.2vw,2.4rem);font-weight:700;color:var(--text);letter-spacing:.04em;margin-bottom:12px}
+.section-subtitle{color:var(--text-light);font-size:.95rem;max-width:600px;margin:0 auto}
+.divider{width:52px;height:3px;border-radius:2px;margin:16px auto;background:var(--loess)}
+.img-card{border-radius:var(--radius-lg);overflow:hidden;position:relative;box-shadow:var(--shadow-sm)}
+.img-card img,.img-card video{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.img-card:hover img,.img-card:hover video{transform:scale(1.04)}
+.img-card .img-tag{position:absolute;bottom:16px;right:16px;padding:6px 16px;border-radius:50px;background:rgba(254,253,251,.92);font-size:.78rem;color:var(--peony);font-weight:500;backdrop-filter:blur(4px);z-index:2}
+
+/* Overview */
+.overview-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
+.overview-text h3{font-size:1.5rem;color:var(--peony);margin-bottom:18px}
+.overview-text p{color:var(--text-light);margin-bottom:14px;font-size:.95rem}
+.overview-visual{aspect-ratio:4/3;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
+
+/* History */
+.history-bg{background:var(--loess-soft);margin:0;max-width:100%}
+.history-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.history-card{background:var(--white);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:all var(--transition)}
+.history-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.history-card-img{aspect-ratio:16/10;overflow:hidden}
+.history-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.history-card:hover .history-card-img img{transform:scale(1.06)}
+.history-card-body{padding:28px 24px}
+.history-card-body h4{font-size:1.12rem;color:var(--peony);margin-bottom:10px}
+.history-card-body p{font-size:.88rem;color:var(--text-light);line-height:1.7}
+
+/* Scenic */
+.scenic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.scenic-card{border-radius:var(--radius-lg);background:var(--white);box-shadow:var(--shadow-sm);padding:18px;transition:transform .3s}
+.scenic-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.scenic-card h4{font-size:1.05rem;color:var(--text);margin-bottom:12px;text-align:center}
+.scenic-card>p{font-size:.82rem;color:var(--text-light);line-height:1.65;margin-top:12px}
+.scenic-card>p span{display:block;margin-top:6px;font-size:.78rem;color:var(--peony)}
+
+/* Carousel - fade stack */
+.carousel{position:relative;width:100%;aspect-ratio:4/3;border-radius:8px;overflow:hidden;background:var(--light)}
+.carousel-slides{position:relative;width:100%;height:100%}
+.carousel-slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+.carousel-slide.active{opacity:1}
+.carousel-slide img{width:100%;height:100%;object-fit:cover}
+.carousel-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
+.carousel-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.5);cursor:pointer;transition:all .3s}
+.carousel-dots span.active{background:#fff;transform:scale(1.3)}
+
+/* Heritage */
+.heritage-bg{background:var(--river-soft);margin:0;max-width:100%}
+.heritage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.heritage-card{text-align:center;border-radius:var(--radius-lg);background:var(--white);transition:all var(--transition);position:relative;box-shadow:var(--shadow-sm);overflow:hidden}
+.heritage-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.heritage-card .badge{position:absolute;top:16px;right:16px;z-index:2;padding:5px 14px;border-radius:50px;font-size:.73rem;background:rgba(196,149,90,.92);color:#fff;font-weight:500}
+.heritage-card .card-img{width:100%;aspect-ratio:4/3;overflow:hidden}
+.heritage-card .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.heritage-card:hover .card-img img{transform:scale(1.06)}
+.heritage-card h4{font-size:1.2rem;color:var(--peony);margin:20px 20px 8px}
+.heritage-card p{font-size:.88rem;color:var(--text-light);padding:0 24px 32px}
+
+/* Food */
+.food-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.food-card{border-radius:var(--radius-lg);overflow:hidden;background:var(--white);box-shadow:var(--shadow-sm);transition:all var(--transition)}
+.food-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.food-card-img{aspect-ratio:1;overflow:hidden}
+.food-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.food-card:hover .food-card-img img{transform:scale(1.06)}
+.food-card-body{padding:16px;text-align:center}
+.food-card-body h4{font-size:.98rem;color:var(--text);margin-bottom:4px}
+.food-card-body p{font-size:.78rem;color:var(--text-light)}
+
+/* Specialties */
+.specialty-row{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-bottom:56px}
+.specialty-row:nth-child(even){direction:rtl}
+.specialty-row:nth-child(even)>*{direction:ltr}
+.specialty-img{aspect-ratio:16/10;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
+.specialty-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.specialty-img:hover img{transform:scale(1.04)}
+.specialty-text h3{font-size:1.45rem;color:var(--peony);margin-bottom:14px}
+.specialty-text p{font-size:.92rem;color:var(--text-light);line-height:1.8}
+
+/* Guide */
+.guide-bg{background:var(--cream);margin:0;max-width:100%}
+.guide-toolbar{display:flex;gap:12px;margin-bottom:40px;flex-wrap:wrap;align-items:center;justify-content:center}
+.guide-search{flex:1;max-width:420px;padding:13px 22px;border-radius:50px;border:1.5px solid var(--light);background:var(--white);font-size:.9rem;outline:none;transition:border-color .2s;font-family:inherit}
+.guide-search:focus{border-color:var(--river);box-shadow:0 0 0 3px rgba(26,107,90,.08)}
+.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.guide-card{background:var(--white);border-radius:var(--radius-lg);padding:30px;box-shadow:var(--shadow-sm);transition:all var(--transition);border-top:3px solid transparent}
+.guide-card:hover{box-shadow:var(--shadow-md);border-top-color:var(--peony)}
+.guide-card h4{font-size:1.05rem;color:var(--peony);margin-bottom:14px}
+.guide-card .info-row{display:flex;justify-content:space-between;padding:7px 0;font-size:.84rem;color:var(--text-light);border-bottom:1px solid var(--light);gap:8px}
+.guide-card .info-row:last-child{border-bottom:none}
+.guide-card .info-row strong{color:var(--text);text-align:right}
+.guide-card .btn-copy{margin-top:16px;padding:10px 0;border-radius:50px;font-size:.84rem;background:var(--river-soft);color:var(--river);cursor:pointer;transition:all .2s;display:block;width:100%;text-align:center}
+.guide-card .btn-copy:hover{background:var(--river);color:#fff}
+
+/* Video */
+.video-bg{background:#1a1210;margin:0;max-width:100%;padding:100px 32px}
+.video-bg .section-title{color:var(--cream)}
+.video-bg .section-subtitle{color:rgba(250,247,242,.6)}
+.video-scroll{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding:20px 0 40px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(250,247,242,.2) transparent}
+.video-scroll::-webkit-scrollbar{height:4px}
+.video-scroll::-webkit-scrollbar-thumb{background:rgba(250,247,242,.2);border-radius:2px}
+.video-card{flex:0 0 320px;scroll-snap-align:start;border-radius:var(--radius-lg);overflow:hidden;background:rgba(255,255,255,.05);transition:all var(--transition);cursor:pointer}
+.video-card:hover{transform:translateY(-5px)}
+.video-card-cover{aspect-ratio:9/16;position:relative;overflow:hidden}
+.video-card-cover video{width:100%;height:100%;object-fit:cover}
+.video-card-cover img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:opacity .3s}
+.video-card-cover.playing img{opacity:0;pointer-events:none}
+.video-card-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.5) 100%);pointer-events:none}
+.video-card-cover .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff;transition:all var(--transition);pointer-events:none}
+.video-card-cover.playing .play-btn{opacity:0}
+.video-card:hover .play-btn{background:var(--peony);transform:translate(-50%,-50%) scale(1.12)}
+.video-card-body{padding:18px}
+.video-card-body h4{font-size:.95rem;color:var(--cream);margin-bottom:4px}
+.video-card-body p{font-size:.8rem;color:rgba(250,247,242,.5)}
+
+/* Video Modal */
+.video-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+.video-modal.active{opacity:1;visibility:visible}
+.video-modal-backdrop{position:absolute;inset:0;cursor:pointer}
+.video-modal-content{position:relative;z-index:1;width:90vw;max-width:1000px;max-height:90vh;display:flex;align-items:center;justify-content:center}
+.video-modal video{width:100%;max-height:85vh;border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.video-modal-close{position:absolute;top:-48px;right:0;z-index:2;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:1.4rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;border:none;backdrop-filter:blur(8px)}
+.video-modal-close:hover{background:rgba(255,255,255,.3);transform:scale(1.08)}
+
+/* Gallery */
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.gallery-item{border-radius:var(--radius);overflow:hidden;position:relative;transition:all var(--transition);cursor:pointer}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gallery-item:hover img{transform:scale(1.06)}
+.gallery-item:hover{z-index:2}
+.gallery-item.wide{grid-column:span 2;aspect-ratio:21/9}
+.gallery-item.tall{grid-row:span 2}
+.gallery-item.normal{aspect-ratio:4/3}
+
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.contact-form{display:flex;flex-direction:column;gap:16px}
+.contact-form input,.contact-form textarea{padding:14px 18px;border-radius:var(--radius-sm);border:1.5px solid var(--light);background:var(--white);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s;resize:vertical}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--peony)}
+.contact-form textarea{min-height:130px}
+.contact-form button{padding:14px 40px;border-radius:50px;background:var(--peony);color:#fff;font-size:.95rem;font-weight:500;transition:all .3s;align-self:flex-start}
+.contact-form button:hover{background:var(--peony-light)}
+.contact-info{padding:36px;background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
+.contact-info h4{font-size:1.2rem;color:var(--peony);margin-bottom:16px}
+.contact-info p{font-size:.9rem;color:var(--text-light);margin-bottom:10px}
+
+/* Footer */
+.footer{background:var(--brown);color:rgba(250,247,242,.7);padding:60px 32px 32px}
+.footer-inner{max-width:1280px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-col h4{font-size:1rem;color:var(--cream);margin-bottom:16px}
+.footer-col p,.footer-col a{font-size:.85rem;color:rgba(250,247,242,.5);display:block;margin-bottom:8px;transition:color .2s}
+.footer-col a:hover{color:var(--loess-light)}
+.footer-bottom{border-top:1px solid rgba(250,247,242,.1);padding-top:24px;text-align:center;font-size:.82rem;color:rgba(250,247,242,.35)}
+
+/* Float */
+.float-consult{position:fixed;bottom:32px;right:32px;z-index:999;width:56px;height:56px;border-radius:50%;background:var(--peony);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(139,26,74,.4);cursor:pointer;transition:all var(--transition);font-size:1.5rem}
+.float-consult:hover{transform:scale(1.1);background:var(--peony-light)}
+.float-back-top{position:fixed;bottom:100px;right:32px;z-index:999;width:46px;height:46px;border-radius:50%;background:var(--white);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--transition);opacity:0;visibility:hidden;color:var(--text-light);font-size:1.2rem}
+.float-back-top.show{opacity:1;visibility:visible}
+.float-back-top:hover{background:var(--peony-soft);color:var(--peony)}
+
+/* Toast */
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(100px);padding:14px 30px;border-radius:50px;background:var(--text);color:#fff;font-size:.88rem;z-index:2000;transition:transform .4s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Responsive */
+@media(max-width:1024px){
+  .overview-grid{grid-template-columns:1fr;gap:36px}
+  .history-grid,.scenic-grid,.heritage-grid,.guide-grid{grid-template-columns:repeat(2,1fr)}
+  .food-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-grid{grid-template-columns:repeat(2,1fr)}
+  .specialty-row{grid-template-columns:1fr}
+  .video-card{flex:0 0 260px}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-toggle{display:flex}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:var(--nav-h);left:0;right:0;background:var(--white);padding:16px;box-shadow:var(--shadow-lg);max-height:80vh;overflow-y:auto}
+  .nav-links.open .nav-item{padding:12px 16px;border-bottom:1px solid var(--light)}
+  .nav-links.open .nav-dropdown{position:static;transform:none;opacity:1;visibility:visible;box-shadow:none;padding-left:16px}
+  .history-grid,.scenic-grid,.heritage-grid,.guide-grid{grid-template-columns:1fr}
+  .food-grid,.gallery-grid{grid-template-columns:1fr 1fr}
+  .contact-grid,.footer-grid{grid-template-columns:1fr}
+  .section{padding:64px 20px}
+  .hero-content h1{font-size:1.8rem}
+  .hero-arrow{display:none}
+}
+@media(max-width:480px){
+  .food-grid,.gallery-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<audio id="bgm" src="背景音乐/临夏.m4a" loop preload="auto"></audio>
+<div class="audio-control" id="audioBtn" title="音乐开关">♪</div>
+
+<!-- Video Modal -->
+<div class="video-modal" id="videoModal">
+  <div class="video-modal-backdrop"></div>
+  <div class="video-modal-content">
+    <button class="video-modal-close" id="videoModalClose">✕</button>
+    <video id="videoModalPlayer" controls playsinline></video>
+  </div>
+</div>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">大美临夏<span>· 河州文旅</span></a>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    <div class="nav-links" id="navLinks">
+      <a href="#home" class="nav-item active">首页</a>
+      <div class="nav-item">历史<div class="nav-dropdown"><a href="#history">彩陶文明</a><a href="#history">齐家文化</a><a href="#history">丝绸之路</a></div></div>
+      <div class="nav-item">景点<div class="nav-dropdown"><a href="#scenic">炳灵寺石窟</a><a href="#scenic">八坊十三巷</a><a href="#scenic">黄河三峡</a><a href="#scenic">松鸣岩</a></div></div>
+      <a href="#heritage" class="nav-item">非遗</a>
+      <a href="#food" class="nav-item">美食</a>
+      <div class="nav-item">攻略<div class="nav-dropdown"><a href="#guide">交通路线</a><a href="#guide">三日游</a><a href="#guide">住宿推荐</a></div></div>
+      <a href="#video" class="nav-item">视频</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-slides">
+    <div class="hero-slide active" style="background-image:url('图片/临夏总览图.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('图片/八坊十三巷.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('图片/松鸣岩.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('图片/太子山.jpg')"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>大美临夏 · 千年河州<span class="sub">彩陶故里&nbsp;·&nbsp;花儿之乡&nbsp;·&nbsp;西部旱码头</span></h1>
+    <div class="hero-decor"><span>◆</span></div>
+    <p>黄河上游的璀璨明珠 · 多民族共生的文化沃土</p>
+    <a href="#overview" class="hero-btn">探索河州 →</a>
+  </div>
+  <button class="hero-arrow prev" id="heroPrev">←</button>
+  <button class="hero-arrow next" id="heroNext">→</button>
+  <div class="hero-indicators" id="heroDots"><span class="hero-dot active"></span><span class="hero-dot"></span><span class="hero-dot"></span><span class="hero-dot"></span></div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section-header">
+    <span class="section-tag peony">河州概览</span>
+    <h2 class="section-title">临夏回族自治州</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">黄河上游 · 古丝路南道要冲 · 联合国非遗花儿之乡</p>
+  </div>
+  <div class="overview-grid">
+    <div class="overview-text">
+      <h3>大禹治水的源头 · 中国彩陶之乡</h3>
+      <p><strong>临夏回族自治州</strong>位于甘肃省中部西南面，黄河上游，东临洮河与定西相望，西倚积石山与青海省毗邻，南靠太子山与甘南州接壤，北濒湟水与兰州市相连。全州总面积<strong>8169平方公里</strong>，下辖<strong>1市7县</strong>：临夏市、临夏县、康乐县、永靖县、广河县、和政县、东乡族自治县、积石山保安族东乡族撒拉族自治县。</p>
+      <p>这里是<strong>中华文明的重要发祥地之一</strong>，拥有距今5000多年的<strong>马家窑文化彩陶</strong>，出土的"彩陶王"为国家一级文物。黄河在这里形成壮美的<strong>黄河三峡</strong>景观，青黄交汇堪称一绝。古称<strong>河州</strong>，是古丝绸之路南道重镇、唐蕃古道必经之地。</p>
+      <p>临夏是多民族聚居地，有回、汉、东乡、保安、撒拉等31个民族。东乡族和保安族是甘肃独有少数民族。<strong>河州花儿</strong>被誉为"大西北之魂"，<strong>松鸣岩花儿会</strong>列入联合国教科文组织人类非物质文化遗产代表作名录。</p>
+    </div>
+    <div class="overview-visual img-card">
+      <img src="图片/临夏总览图.jpg" alt="临夏全景" loading="lazy">
+      <div class="img-tag">黄河上游 · 河州全景</div>
+    </div>
+  </div>
+</section>
+
+<section class="section history-bg" id="history">
+  <div class="section-header" style="max-width:1280px;margin:0 auto 64px;">
+    <span class="section-tag loess">历史文明</span>
+    <h2 class="section-title">五千年黄河彩陶文明</h2>
+    <div class="divider"></div>
+  </div>
+  <div style="max-width:1280px;margin:0 auto;padding:0 32px;">
+    <div class="history-grid">
+      <div class="history-card">
+        <div class="history-card-img"><img src="图片/马家窑.jpg" alt="马家窑彩陶" loading="lazy"></div>
+        <div class="history-card-body"><h4>马家窑彩陶文化</h4><p><strong>距今约5000-4000年</strong>，临夏是马家窑文化核心区域。出土的<strong>彩陶王</strong>纹饰精美绝伦，漩涡纹、水波纹展现先民对黄河的崇拜，是世界彩陶史上的巅峰之作。</p></div>
+      </div>
+      <div class="history-card">
+        <div class="history-card-img"><img src="图片/和政古动物化石博物馆.jpg" alt="和政化石" loading="lazy"></div>
+        <div class="history-card-body"><h4>齐家文化 & 古动物化石</h4><p>齐家文化因首先发现于<strong>广河县齐家坪</strong>而得名。和政古动物化石群占据<strong>六项世界之最</strong>，记录了2400万年前的生命奇迹，被誉为"史前动物伊甸园"。</p></div>
+      </div>
+      <div class="history-card">
+        <div class="history-card-img"><img src="图片/太子山.jpg" alt="丝绸之路" loading="lazy"></div>
+        <div class="history-card-body"><h4>丝绸之路 & 唐蕃古道</h4><p>临夏自古为<strong>陇右重镇</strong>，丝绸之路南道必经之地、唐蕃古道要冲。商贾云集、茶马互市，形成了开放包容的<strong>河州商埠文化</strong>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="scenic">
+  <div class="section-header">
+    <span class="section-tag river">景点分区</span>
+    <h2 class="section-title">一市七县 · 各美其美</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="scenic-grid">
+    <div class="scenic-card" data-area="lxs">
+      <h4>临夏市</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/临夏市/1.jpg" alt="临夏市" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/临夏市/2.jpg" alt="临夏市" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/临夏市/3.jpg" alt="临夏市" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/临夏市/4.png" alt="临夏市" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p>州府所在地，<strong>八坊十三巷</strong>坐落于此——八座清真寺与十三条街巷构成河州民族风情核心区，砖雕、木雕、葫芦雕刻三绝荟萃。大夏河穿城而过，<strong>人民红园</strong>融南北园林风格于一体。每年五月<strong>牡丹文化嘉年华</strong>满城芬芳。<br><span>📍 八坊十三巷 | 红园 | 东公馆 | 牡丹长廊 · 🎫 多数免费</span></p>
+    </div>
+
+    <div class="scenic-card" data-area="lxx">
+      <h4>临夏县</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/临夏县/1.png" alt="临夏县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/临夏县/2.jpg" alt="临夏县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/临夏县/3.png" alt="临夏县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/临夏县/4.png" alt="临夏县" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p>古河州治所所在地，历史底蕴深厚。<strong>太子山</strong>巍峨耸立，山顶终年积雪，被誉为“陇上天然屏障”。<strong>槐树关</strong>是古丝绸之路南道重要关隘，<strong>莲花山</strong>为洮岷花儿发源地之一。<br><span>📍 太子山 | 莲花山 | 槐树关 · 🎫 太子山免费</span></p>
+    </div>
+
+    <div class="scenic-card" data-area="klx">
+      <h4>康乐县</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/康乐县/1.jpg" alt="康乐县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/康乐县/2.jpg" alt="康乐县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/康乐县/3.jpg" alt="康乐县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/康乐县/4.jpg" alt="康乐县" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p><strong>竹子沟</strong>被誉为“陇上小天山”，天然草甸连绵起伏，夏季绿草如茵牛羊成群。<strong>莲花山国家级自然保护区</strong>是洮岷花儿的故乡，<strong>药水峡</strong>森林覆盖率超90%，溪水潺潺。<br><span>📍 竹子沟 | 莲花山 | 药水峡 · 🎫 竹子沟免费</span></p>
+    </div>
+
+    <div class="scenic-card" data-area="yjx">
+      <h4>永靖县</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/永靖县/1.jpg" alt="永靖县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/永靖县/2.jpg" alt="永靖县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/永靖县/3.jpg" alt="永靖县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/永靖县/4.jpg" alt="永靖县" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p><strong>炳灵寺石窟</strong>世界文化遗产，始建于西秦（420年），27米唐大佛面朝黄河。<strong>黄河三峡</strong>（炳灵峡、刘家峡、盐锅峡）形成壮美峡谷景观带，洮河与黄河交汇处<strong>一清一浊</strong>泾渭分明堪称奇观。<br><span>📍 炳灵寺石窟 | 刘家峡大坝 | 黄河三峡 · 🎫 炳灵寺¥50 三峡¥80</span></p>
+    </div>
+
+    <div class="scenic-card" data-area="ghx">
+      <h4>广河县</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/广河县/lQDPJx8rwSNZAq_NB4DNBQCwI46HwSkTRWwKGACjhN5SAA_1280_1920.jpg" alt="广河县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/广河县/lQDPJxdRxWpk4q_NBxvNBDywY9VfVKgtkuYKGACjhN5SAQ_1084_1819.jpg" alt="广河县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/广河县/lQDPJxhrtupGQq_NBQDNB4CwLjnsG1peG4EKGACji-pQAQ_1920_1280.jpg" alt="广河县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/广河县/lQDPKG1yHGw5g6_NBQDNB4Cw2PScLyRtsGEKGACji-pQAA_1920_1280.jpg" alt="广河县" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p><strong>齐家文化</strong>命名地——1924年瑞典考古学家安特生在<strong>齐家坪遗址</strong>首次发现距今约4000年的青铜时代文化。这里是华夏文明最早使用青铜器的地区之一，出土了大量精美玉器和陶器。洮河流经全境，孕育了灿烂的史前文明。<br><span>📍 齐家坪遗址 | 半山遗址 · 🎫 免费参观</span></p>
+    </div>
+
+    <div class="scenic-card" data-area="hzx">
+      <h4>和政县</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/和政县/1.jpg" alt="和政县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/和政县/lQDPJwJSqEGXmN_NCHDNBaCwtREMaW9ngeQKGAGovoi3AA_1440_2160.jpg" alt="和政县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/和政县/lQDPKGtQafU4ON_NBqrNBQqwnclEB0V4UZcKGAGotKa9AQ_1290_1706.jpg" alt="和政县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/和政县/lQLPJxE-iPub-d_NDKjNCHCwkMBchkALrP4KGAGpKMCvAA_2160_3240.png" alt="和政县" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p><strong>松鸣岩</strong>国家4A级景区，入选联合国教科文组织人类非遗代表作名录的<strong>花儿会</strong>每年农历四月二十六至二十八在此举行，22℃天然避暑胜地。<strong>和政古动物化石博物馆</strong>馆藏化石3万余件，占据六项世界之最，见证了2400万年前的史前生命奇迹。<br><span>📍 松鸣岩 | 化石博物馆 | 法台山 · 🎫 松鸣岩¥40 化石馆免费</span></p>
+    </div>
+
+    <div class="scenic-card" data-area="dxz">
+      <h4>东乡族自治县</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/东乡族自治县/lQDPJv8yTWPEJL_NCLPNBAGwdCsYv8Dg7ikKGAU5H9ShAA_1025_2227.jpg" alt="东乡族自治县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/东乡族自治县/lQLPJwXpP05kRL_NA8DNBaCwOIZq3k30ciQKGAU5H9ShAw_1440_960.png" alt="东乡族自治县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/东乡族自治县/lQLPJxD1xpukpL_NCG7NBaCwR7EeXMviQgEKGAU5H9ShAg_1440_2158.png" alt="东乡族自治县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/东乡族自治县/lQLPKG4oApiTpb_NCHDNBaCwh4Y7ClSFrC0KGAU5H9ShAQ_1440_2160.png" alt="东乡族自治县" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p>甘肃独有少数民族——<strong>东乡族</strong>的主要聚居地。<strong>东乡手抓羊肉</strong>驰名西北，入选省级非遗。境内以黄土高原沟壑地貌为主，<strong>唐汪川</strong>以百年杏林闻名，四月杏花如雪。<strong>林家遗址</strong>出土了距今5000年的中国最早铜刀，被誉为“中华第一刀”。<br><span>📍 唐汪川杏花村 | 林家遗址 | 布楞沟 · 🎫 免费</span></p>
+    </div>
+
+    <div class="scenic-card" data-area="jssx">
+      <h4>积石山县</h4>
+      <div class="carousel" data-speed="2500">
+        <div class="carousel-slides">
+          <div class="carousel-slide active"><img src="图片/积石山县/lQLPJxJYeofEqV_NA2zNB3ywXlTdqTDEbX8KGAP15XTTAA_1916_876.png" alt="积石山县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/积石山县/lQLPJxyvG7EGVp_NC0DNCHCw3ou95WgEfJsKGAPEAbuxAg_2160_2880.png" alt="积石山县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/积石山县/lQLPKGPaebBZ15_NBpnNCNywWH-5DPtUW8sKGAPEAbuxAA_2268_1689.png" alt="积石山县" loading="lazy"></div>
+          <div class="carousel-slide"><img src="图片/积石山县/lQLPKGSQX9FOV5_NByfNCOCwXjpUH8RD-fQKGAPEDpsXAA_2272_1831.png" alt="积石山县" loading="lazy"></div>
+        </div>
+        <div class="carousel-dots"><span class="active"></span><span></span><span></span><span></span></div>
+      </div>
+      <p>全国唯一的<strong>保安族</strong>聚居地，<strong>积石山</strong>传说是大禹治水“导河积石”之处。<strong>大墩峡</strong>以冰川遗址地貌著称，<strong>黄草坪</strong>高山草甸视野开阔。<strong>保安腰刀</strong>锻制技艺为国家级非物质文化遗产，与藏刀、蒙古刀并称中国三大名刀。<br><span>📍 大墩峡 | 黄草坪 | 积石雄关 · 🎫 大墩峡¥30</span></p>
+    </div>
+
+  </div>
+</section><section class="section heritage-bg" id="heritage">
+  <div class="section-header" style="max-width:1280px;margin:0 auto 64px;">
+    <span class="section-tag peony">非遗传承</span>
+    <h2 class="section-title">临夏三大国家级非遗</h2>
+    <div class="divider"></div>
+  </div>
+  <div style="max-width:1280px;margin:0 auto;padding:0 32px;">
+    <div class="heritage-grid">
+      <div class="heritage-card">
+        <div class="badge">国家级非遗</div>
+        <div class="card-img"><img src="图片/砖雕.jpg" alt="临夏砖雕" loading="lazy"></div>
+        <h4>临夏砖雕</h4>
+        <p><strong>临夏砖雕</strong>源于北宋，成熟于明清。以青砖为材，融合回族与汉族雕刻技法，刀法细腻、层次丰富。<strong>八坊十三巷</strong>即为砖雕艺术露天博物馆。</p>
+      </div>
+      <div class="heritage-card">
+        <div class="badge">省级非遗</div>
+        <div class="card-img"><img src="图片/葫芦雕刻.jpg" alt="雕刻葫芦" loading="lazy"></div>
+        <h4>临夏雕刻葫芦</h4>
+        <p>在方寸葫芦上以针刀刻山水人物、花鸟鱼虫，施松墨着色。以<strong>"刀法细腻、层次分明"</strong>闻名，与砖雕、彩陶并称"河州三绝"。</p>
+      </div>
+      <div class="heritage-card">
+        <div class="badge">国家级非遗</div>
+        <div class="card-img"><img src="图片/保安族腰刀.jpg" alt="保安腰刀" loading="lazy"></div>
+        <h4>保安族腰刀</h4>
+        <p><strong>保安腰刀</strong>与藏刀、蒙古刀并称中国三大名刀。采用<strong>"加钢淬火·折花工艺"</strong>反复折叠锻打，刀身纹如流水，锋利耐用。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="food">
+  <div class="section-header">
+    <span class="section-tag loess">河州味道</span>
+    <h2 class="section-title">临夏特色美食大全</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="food-grid">
+    <div class="food-card"><div class="food-card-img"><img src="图片/东乡手抓羊肉.jpg" alt="东乡手抓" loading="lazy"></div><div class="food-card-body"><h4>东乡手抓羊肉</h4><p>东乡族招牌非遗美食</p></div></div>
+    <div class="food-card"><div class="food-card-img"><img src="图片/老炒.jpg" alt="河沿面片" loading="lazy"></div><div class="food-card-body"><h4>河沿面片 & 河州老炒</h4><p>手工面片·爆炒浓香</p></div></div>
+    <div class="food-card"><div class="food-card-img"><img src="图片/甜胚子.jpg" alt="八宝盖碗茶" loading="lazy"></div><div class="food-card-body"><h4>八宝盖碗茶 & 甜醅子</h4><p>三炮台·清甜解暑</p></div></div>
+    <div class="food-card"><div class="food-card-img"><img src="图片/河州包子.jpg" alt="河州包子" loading="lazy"></div><div class="food-card-body"><h4>河州包子</h4><p>皮薄馅大鲜香多汁</p></div></div>
+    <div class="food-card"><div class="food-card-img"><img src="图片/发子面肠.jpg" alt="发子面肠" loading="lazy"></div><div class="food-card-body"><h4>发子面肠</h4><p>羊肠灌制特色小吃</p></div></div>
+    <div class="food-card"><div class="food-card-img"><img src="图片/酿皮子.jpg" alt="酿皮子" loading="lazy"></div><div class="food-card-body"><h4>酿皮子</h4><p>爽滑劲道酸辣开胃</p></div></div>
+    <div class="food-card"><div class="food-card-img"><img src="图片/河州八大碗.jpg" alt="河州八大碗" loading="lazy"></div><div class="food-card-body"><h4>河州八大碗</h4><p>西北待客最高礼遇</p></div></div>
+    <div class="food-card"><div class="food-card-img"><img src="图片/馓子.jpg" alt="馓子油香" loading="lazy"></div><div class="food-card-body"><h4>馓子 & 油香 & 馃馃</h4><p>回族节庆传统面点</p></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag river">特产伴手</span>
+    <h2 class="section-title">河州好礼 · 把临夏带回家</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="specialty-row">
+    <div class="specialty-img"><img src="图片/紫斑牡丹.jpg" alt="紫斑牡丹" loading="lazy"></div>
+    <div class="specialty-text"><h3>紫斑牡丹 · 河州紫</h3><p>临夏是<strong>紫斑牡丹</strong>重要原产地和栽培中心，因花瓣基部有紫黑色斑块得名。栽培历史1400余年，品种300多个。每年五月满城芬芳，根皮可入药，花可制茶提取精油。</p></div>
+  </div>
+  <div class="specialty-row">
+    <div class="specialty-img"><img src="图片/砖雕.jpg" alt="手工地毯砖雕" loading="lazy"></div>
+    <div class="specialty-text"><h3>手工地毯 · 砖雕摆件 · 葫芦工艺品</h3><p>临夏手工地毯以<strong>仿古地毯</strong>著称，传统植物染色手工打结，图案取材波斯纹样和民族几何花纹。砖雕微缩摆件和雕刻葫芦是独具河州特色的文化伴手礼。</p></div>
+  </div>
+</section>
+
+<section class="section guide-bg" id="guide">
+  <div class="section-header" style="max-width:1280px;margin:0 auto 64px;">
+    <span class="section-tag peony">出行攻略</span>
+    <h2 class="section-title">实用旅游指南</h2>
+    <div class="divider"></div>
+  </div>
+  <div style="max-width:1280px;margin:0 auto;padding:0 32px;">
+    <div class="guide-toolbar">
+      <input type="text" class="guide-search" id="guideSearch" placeholder="🔍 搜索景区 / 美食 / 攻略..." oninput="filterGuides()">
+    </div>
+    <div class="guide-grid" id="guideGrid">
+      <div class="guide-card" data-keywords="交通 兰州 高速 路线 怎么去"><h4>🚗 兰州 → 临夏交通</h4><div class="info-row"><span>自驾高速</span><strong>G1816乌玛高速 约1.5h</strong></div><div class="info-row"><span>长途大巴</span><strong>兰州汽车南站 约2h</strong></div><div class="info-row"><span>距离</span><strong>约140公里</strong></div><button class="btn-copy" onclick="copyText('兰州→临夏：G1816乌玛高速，约140公里，自驾约1.5小时')">📋 复制路线</button></div>
+      <div class="guide-card" data-keywords="三日游 路线 行程 规划"><h4>🗺️ 经典三日游路线</h4><div class="info-row"><span>Day1</span><strong>临夏市：八坊十三巷→东公馆→牡丹公园</strong></div><div class="info-row"><span>Day2</span><strong>永靖县：炳灵寺石窟→黄河三峡游船</strong></div><div class="info-row"><span>Day3</span><strong>和政县：松鸣岩→化石博物馆→返程</strong></div><button class="btn-copy" onclick="copyText('Day1: 临夏市八坊十三巷→东公馆→牡丹公园; Day2: 永靖炳灵寺石窟→黄河三峡; Day3: 和政松鸣岩→化石博物馆')">📋 复制路线</button></div>
+      <div class="guide-card" data-keywords="美食 打卡 手抓 餐厅 吃什么"><h4>🍖 美食打卡点位</h4><div class="info-row"><span>手抓羊肉</span><strong>临夏市北大街美食街</strong></div><div class="info-row"><span>河沿面片</span><strong>折桥湾农家乐片区</strong></div><div class="info-row"><span>盖碗茶</span><strong>八坊十三巷老茶馆</strong></div><div class="info-row"><span>夜市小吃</span><strong>中心广场夜市</strong></div><button class="btn-copy" onclick="copyText('美食打卡：北大街(手抓羊肉)、折桥湾(河沿面片)、八坊十三巷(盖碗茶)、中心广场夜市')">📋 复制列表</button></div>
+      <div class="guide-card" data-keywords="住宿 酒店 推荐 住哪里"><h4>🏨 住宿推荐</h4><div class="info-row"><span>高端</span><strong>河州鸿瑞国际酒店</strong></div><div class="info-row"><span>中端</span><strong>临夏饭店 / 万达锦华</strong></div><div class="info-row"><span>特色民宿</span><strong>八坊十三巷民宿群</strong></div><div class="info-row"><span>永靖</span><strong>刘家峡黄河宾馆</strong></div><button class="btn-copy" onclick="copyText('住宿推荐：河州鸿瑞国际(高端)、临夏饭店(中端)、八坊十三巷民宿(特色)、刘家峡黄河宾馆(永靖)')">📋 复制列表</button></div>
+      <div class="guide-card" data-keywords="门票 价格 开放 时间"><h4>🎫 景区门票 & 开放时间</h4><div class="info-row"><span>炳灵寺石窟</span><strong>¥50 · 8:30-17:30</strong></div><div class="info-row"><span>黄河三峡游船</span><strong>¥80 · 8:00-18:00</strong></div><div class="info-row"><span>松鸣岩</span><strong>¥40 · 8:00-18:00</strong></div><div class="info-row"><span>八坊十三巷</span><strong>免费 · 全天</strong></div><div class="info-row"><span>化石博物馆</span><strong>免费 · 9:00-17:00</strong></div><button class="btn-copy" onclick="copyText('门票：炳灵寺¥50、黄河三峡¥80、松鸣岩¥40、八坊十三巷免费、化石博物馆免费')">📋 复制信息</button></div>
+      <div class="guide-card" data-keywords="季节 什么时候 最佳 五月 避暑"><h4>🌸 最佳旅游季节</h4><div class="info-row"><span>5月</span><strong>牡丹文化嘉年华</strong></div><div class="info-row"><span>6-8月</span><strong>22℃避暑·松鸣岩</strong></div><div class="info-row"><span>9-10月</span><strong>秋高气爽·瓜果飘香</strong></div><div class="info-row"><span>开斋节/古尔邦节</span><strong>体验民族节庆文化</strong></div><button class="btn-copy" onclick="copyText('最佳季节：5月(牡丹花节)、6-8月(22℃避暑&花儿会)、9-10月(秋景)、开斋节/古尔邦节(民族节庆)')">📋 复制信息</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="video-bg" id="video">
+  <div class="section-header" style="max-width:1280px;margin:0 auto 64px;">
+    <span class="section-tag peony" style="background:rgba(139,26,74,.25);color:var(--loess-light);">视频专区</span>
+    <h2 class="section-title">影像河州</h2>
+    <div class="divider" style="background:rgba(250,247,242,.3);"></div>
+    <p class="section-subtitle">从天空俯瞰黄河三峡，从古巷聆听花儿悠扬</p>
+  </div>
+  <div style="max-width:1280px;margin:0 auto;padding:0 32px;">
+    <div class="video-scroll" id="videoScroll">
+      <div class="video-card" data-video="视频/八坊十三巷.mp4">
+        <div class="video-card-cover">
+          <img src="图片/八坊十三巷.jpg" alt="八坊十三巷" loading="lazy">
+          <video src="视频/八坊十三巷.mp4" muted loop playsinline preload="none"></video>
+          <div class="play-btn">▶</div>
+        </div>
+        <div class="video-card-body"><h4>八坊十三巷人文纪实</h4><p>古巷深处的人间烟火</p></div>
+      </div>
+      <div class="video-card" data-video="视频/松鸣岩下唱响花儿心声，数字工程永续民族文脉.mp4">
+        <div class="video-card-cover">
+          <img src="图片/松鸣岩.jpg" alt="松鸣岩" loading="lazy">
+          <video src="视频/松鸣岩下唱响花儿心声，数字工程永续民族文脉.mp4" muted loop playsinline preload="none"></video>
+          <div class="play-btn">▶</div>
+        </div>
+        <div class="video-card-body"><h4>松鸣岩现场</h4><p>联合国非遗 · 大西北之魂</p></div>
+      </div>
+      <div class="video-card" data-video="视频/甘肃三大石窟之一_·_炳灵寺石窟.mp4">
+        <div class="video-card-cover">
+          <img src="图片/炳灵寺石窟.jpg" alt="炳灵寺石窟" loading="lazy">
+          <video src="视频/甘肃三大石窟之一_·_炳灵寺石窟.mp4" muted loop playsinline preload="none"></video>
+          <div class="play-btn">▶</div>
+        </div>
+        <div class="video-card-body"><h4>炳灵寺石窟航拍</h4><p>世界文化遗产 · 千年石窟艺术</p></div>
+      </div>
+      <div class="video-card" data-video="视频/甘肃临夏居然藏着"小瑞士"?伸手就能摸到云!耳子屲(wa)景区，抬头就是震撼的太子山十三峰!.mp4">
+        <div class="video-card-cover">
+          <img src="图片/太子山.jpg" alt="太子山" loading="lazy">
+          <video src="视频/甘肃临夏居然藏着"小瑞士"?伸手就能摸到云!耳子屲(wa)景区，抬头就是震撼的太子山十三峰!.mp4" muted loop playsinline preload="none"></video>
+          <div class="play-btn">▶</div>
+        </div>
+        <div class="video-card-body"><h4>太子山十三峰航拍</h4><p>陇上小瑞士 · 22℃避暑胜地</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag river">图文专区</span>
+    <h2 class="section-title">河州映像 · 光影临夏</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item wide"><img src="图片/临夏总览图.jpg" alt="临夏全景" loading="lazy"></div>
+    <div class="gallery-item normal"><img src="图片/八坊十三巷.jpg" alt="八坊十三巷" loading="lazy"></div>
+    <div class="gallery-item tall"><img src="图片/竹子沟.jpg" alt="竹子沟" loading="lazy"></div>
+    <div class="gallery-item normal"><img src="图片/红园.jpg" alt="红园" loading="lazy"></div>
+    <div class="gallery-item normal"><img src="图片/马家窑.jpg" alt="彩陶" loading="lazy"></div>
+    <div class="gallery-item wide"><img src="图片/太子山.jpg" alt="太子山" loading="lazy"></div>
+    <div class="gallery-item normal"><img src="图片/砖雕.jpg" alt="砖雕" loading="lazy"></div>
+    <div class="gallery-item normal"><img src="图片/葫芦雕刻.jpg" alt="葫芦" loading="lazy"></div>
+    <div class="gallery-item normal"><img src="图片/保安族腰刀.jpg" alt="腰刀" loading="lazy"></div>
+    <div class="gallery-item wide"><img src="图片/和政古动物化石博物馆.jpg" alt="化石博物馆" loading="lazy"></div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--loess-soft);margin:0;max-width:100%;">
+  <div class="section-header" style="max-width:1280px;margin:0 auto 64px;">
+    <span class="section-tag peony">在线咨询</span>
+    <h2 class="section-title">留言 & 咨询</h2>
+    <div class="divider"></div>
+  </div>
+  <div style="max-width:1280px;margin:0 auto;padding:0 32px;">
+    <div class="contact-grid">
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <input type="text" placeholder="您的姓名" required>
+        <input type="email" placeholder="联系邮箱" required>
+        <input type="tel" placeholder="手机号码（选填）">
+        <textarea placeholder="请输入您的咨询内容或留言..." required></textarea>
+        <button type="submit">发送留言</button>
+      </form>
+      <div class="contact-info">
+        <h4>📞 联系信息</h4>
+        <p><strong>临夏州文化广电和旅游局</strong></p>
+        <p>📞 旅游咨询热线：0930-12301</p>
+        <p>📧 lxlyj@linxia.gov.cn</p>
+        <p>📍 甘肃省临夏市红园路</p>
+        <p style="margin-top:14px;padding:14px;background:var(--river-soft);border-radius:var(--radius-sm);font-size:.84rem;">⚠️ <strong>出行提示：</strong>高原紫外线较强请注意防晒；早晚温差大请备外套；尊重当地民族风俗，进入清真寺衣着得体；夏季平均22℃绝佳避暑胜地。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col"><h4>大美临夏 · 千年河州</h4><p>黄河上游的璀璨明珠，古丝绸之路南道重镇。彩陶故里、花儿之乡、西部旱码头，多民族共生的文化沃土。</p></div>
+      <div class="footer-col"><h4>快速导航</h4><a href="#history">历史文化</a><a href="#scenic">景点推荐</a><a href="#heritage">非遗传承</a><a href="#guide">出行攻略</a></div>
+      <div class="footer-col"><h4>实用链接</h4><a href="https://www.linxia.gov.cn" target="_blank" rel="noopener">临夏州政府官网</a><a href="#guide">交通路线</a><a href="#guide">门票信息</a><a href="#guide">美食打卡</a></div>
+      <div class="footer-col"><h4>联系我们</h4><p>📞 0930-12301</p><p>📧 lxlyj@linxia.gov.cn</p><p>📍 甘肃省临夏市红园路</p></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 大美临夏文旅官网 · 部分内容参考临夏州政府官网 · 仅供文旅宣传展示使用</p></div>
+  </div>
+</footer>
+
+<div class="float-consult" id="floatConsult" title="在线咨询">💬</div>
+<div class="float-back-top" id="backTop" title="回到顶部">↑</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== BGM ===== */
+const bgm = document.getElementById('bgm');
+const audioBtn = document.getElementById('audioBtn');
+let audioPlaying = false;
+
+function tryPlayBgm() {
+  bgm.play().then(() => {
+    audioPlaying = true;
+    audioBtn.classList.remove('muted');
+  }).catch(() => {
+    audioBtn.classList.add('muted');
+  });
+}
+tryPlayBgm();
+
+audioBtn.addEventListener('click', () => {
+  if (audioPlaying) {
+    bgm.pause();
+    audioPlaying = false;
+    audioBtn.classList.add('muted');
+  } else {
+    bgm.play().then(() => {
+      audioPlaying = true;
+      audioBtn.classList.remove('muted');
+    }).catch(() => {});
+  }
+});
+
+// 持续监听用户交互以恢复播放（浏览器自动播放策略兼容）
+function resumeBgmOnInteraction() {
+  if (!audioPlaying) tryPlayBgm();
+}
+document.addEventListener('click', resumeBgmOnInteraction);
+document.addEventListener('scroll', resumeBgmOnInteraction);
+document.addEventListener('touchstart', resumeBgmOnInteraction);
+
+/* ===== Nav ===== */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 10));
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  if (window.innerWidth <= 768) navLinks.classList.remove('open');
+}));
+
+/* ===== Hero ===== */
+let heroIndex = 0;
+const heroSlides = document.querySelectorAll('.hero-slide');
+const heroDots = document.querySelectorAll('.hero-dot');
+const totalSlides = heroSlides.length;
+function goToSlide(i) {
+  heroSlides[heroIndex].classList.remove('active');
+  heroDots[heroIndex].classList.remove('active');
+  heroIndex = (i + totalSlides) % totalSlides;
+  heroSlides[heroIndex].classList.add('active');
+  heroDots[heroIndex].classList.add('active');
+}
+document.getElementById('heroPrev').addEventListener('click', () => goToSlide(heroIndex - 1));
+document.getElementById('heroNext').addEventListener('click', () => goToSlide(heroIndex + 1));
+heroDots.forEach((dot, i) => dot.addEventListener('click', () => goToSlide(i)));
+let heroTimer = setInterval(() => goToSlide(heroIndex + 1), 6000);
+
+/* ===== Scenic Carousel ===== */
+let carouselTimers = {};
+
+function startCarousel(carousel) {
+  const slides = carousel.querySelectorAll('.carousel-slide');
+  const dots = carousel.querySelectorAll('.carousel-dots span');
+  const speed = parseInt(carousel.dataset.speed) || 2500;
+  let idx = 0;
+  if (carouselTimers[carousel]) clearInterval(carouselTimers[carousel]);
+
+  function goTo(n) {
+    slides[idx].classList.remove('active');
+    idx = (n + slides.length) % slides.length;
+    slides[idx].classList.add('active');
+    dots.forEach(function(d,i) { d.classList.toggle('active', i===idx); });
+  }
+
+  carouselTimers[carousel] = setInterval(function() { goTo(idx + 1); }, speed);
+
+  dots.forEach(function(dot, i) {
+    dot.addEventListener('click', function(e) { e.stopPropagation(); goTo(i); });
+  });
+
+  let startX = 0, isDragging = false;
+  carousel.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; isDragging = true; });
+  carousel.addEventListener('touchend', function(e) {
+    if (!isDragging) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) goTo(idx + (dx < 0 ? 1 : -1));
+    isDragging = false;
+  });
+}
+
+document.querySelectorAll('.carousel').forEach(function(c) { startCarousel(c); });
+
+/* ===== Favorites / Copy / Toast ===== */
+function toggleFav(btn) {
+  btn.classList.toggle('saved');
+  btn.textContent = btn.classList.contains('saved') ? '★ 已收藏' : '☆ 收藏';
+  showToast(btn.classList.contains('saved') ? '已加入收藏夹' : '已取消收藏');
+}
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('已复制到剪贴板 ✓'));
+}
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function filterGuides() {
+  const q = document.getElementById('guideSearch').value.toLowerCase();
+  document.querySelectorAll('.guide-card').forEach(card => {
+    const kw = card.dataset.keywords || '';
+    card.style.display = !q || kw.includes(q) ? '' : 'none';
+  });
+}
+function handleSubmit(e) { e.preventDefault(); showToast('留言已发送，感谢您的咨询！'); e.target.reset(); }
+
+/* ===== Back top ===== */
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => backTop.classList.toggle('show', window.scrollY > 600));
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+document.getElementById('floatConsult').addEventListener('click', () => {
+  document.querySelector('.contact-grid')?.scrollIntoView({ behavior: 'smooth' });
+});
+
+/* ===== Nav active ===== */
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item[href]');
+window.addEventListener('scroll', () => {
+  let curr = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) curr = s.id; });
+  navItems.forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('href')?.slice(1) === curr) item.classList.add('active');
+  });
+});
+
+/* ===== Video Modal ===== */
+const videoModal = document.getElementById('videoModal');
+const videoModalPlayer = document.getElementById('videoModalPlayer');
+const videoModalClose = document.getElementById('videoModalClose');
+const videoModalBackdrop = videoModal.querySelector('.video-modal-backdrop');
+
+function openVideoModal(videoSrc) {
+  videoModalPlayer.src = videoSrc;
+  videoModalPlayer.load();
+  videoModal.classList.add('active');
+  document.body.classList.add('modal-open');
+  videoModalPlayer.play().catch(() => {});
+  // 暂停BGM
+  if (audioPlaying) {
+    bgm.pause();
+    audioPlaying = false;
+    audioBtn.classList.add('muted');
+  }
+}
+function closeVideoModal() {
+  videoModalPlayer.pause();
+  videoModalPlayer.src = '';
+  videoModal.classList.remove('active');
+  document.body.classList.remove('modal-open');
+}
+videoModalClose.addEventListener('click', closeVideoModal);
+videoModalBackdrop.addEventListener('click', closeVideoModal);
+videoModalPlayer.addEventListener('ended', closeVideoModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeVideoModal(); });
+
+// 视频卡片点击 → 弹窗播放
+document.querySelectorAll('.video-card').forEach(card => {
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('.video-modal')) return;
+    const src = card.dataset.video;
+    if (src) openVideoModal(src);
+  });
+});
+</script>
+</body>
+</html>
