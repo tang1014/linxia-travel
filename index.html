@@ -801,11 +801,12 @@ ul{list-style:none}
   </div>
   <div style="max-width:var(--container-max);margin:0 auto;padding:0 var(--container-padding)">
     <div class="contact-grid">
-      <form class="contact-form" onsubmit="handleSubmit(event)">
-        <input type="text" placeholder="您的姓名" required>
-        <input type="email" placeholder="联系邮箱" required>
-        <input type="tel" placeholder="手机号码（选填）">
-        <textarea placeholder="请输入您的咨询内容或留言..." required></textarea>
+      <form class="contact-form" id="contactForm">
+        <input type="hidden" name="access_key" value="3cd02bb4-a346-48e6-a228-2aa452aa0507">
+        <input type="text" name="name" placeholder="您的姓名" required>
+        <input type="email" name="email" placeholder="联系邮箱" required>
+        <input type="tel" name="phone" placeholder="手机号码（选填）">
+        <textarea name="message" placeholder="请输入您的咨询内容或留言..." required></textarea>
         <button type="submit">发送留言</button>
       </form>
       <div class="contact-info">
@@ -969,7 +970,21 @@ function filterGuides() {
     card.style.display = !q || kw.includes(q) ? '' : 'none';
   });
 }
-function handleSubmit(e) { e.preventDefault(); showToast('留言已发送，感谢您的咨询！'); e.target.reset(); }
+/* ── Contact Form (Web3Forms) ── */
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var btn = this.querySelector('button');
+  btn.textContent = '发送中...';
+  btn.disabled = true;
+  try {
+    var resp = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(this) });
+    var data = await resp.json();
+    if (data.success) { showToast('留言已发送，感谢您的咨询！'); this.reset(); }
+    else { showToast('发送失败，请稍后重试'); }
+  } catch (err) { showToast('网络错误，请稍后重试'); }
+  btn.textContent = '发送留言';
+  btn.disabled = false;
+});
 
 /* ── Back Top ── */
 const backTop = document.getElementById('backTop');
