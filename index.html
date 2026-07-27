@@ -847,17 +847,25 @@ const bgm = document.getElementById('bgm');
 const audioBtn = document.getElementById('audioBtn');
 let audioPlaying = false;
 
+bgm.addEventListener('error', () => {
+  const e = bgm.error;
+  console.error('BGM 加载失败 — code:', e ? e.code : '?', 'message:', e ? e.message : '?');
+});
+bgm.addEventListener('playing', () => console.log('BGM 正在播放'));
+
 function tryPlayBgm() {
+  if (bgm.error) { console.warn('BGM 处于错误状态，跳过 play()'); return; }
   bgm.play().then(() => {
     audioPlaying = true;
     audioBtn.classList.remove('muted');
-  }).catch(() => {
+  }).catch((err) => {
+    console.warn('BGM play() 被拦截:', err.name);
     audioBtn.classList.add('muted');
   });
 }
-tryPlayBgm();
 
-audioBtn.addEventListener('click', () => {
+audioBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
   if (audioPlaying) {
     bgm.pause();
     audioPlaying = false;
@@ -870,12 +878,12 @@ audioBtn.addEventListener('click', () => {
   }
 });
 
+/* 首次用户交互时自动播放（仅 click/touch，scroll 不授予音频权限） */
 function resumeBgmOnInteraction() {
   if (!audioPlaying) tryPlayBgm();
 }
-document.addEventListener('click', resumeBgmOnInteraction);
-document.addEventListener('scroll', resumeBgmOnInteraction);
-document.addEventListener('touchstart', resumeBgmOnInteraction);
+document.addEventListener('click', resumeBgmOnInteraction, { once: true });
+document.addEventListener('touchstart', resumeBgmOnInteraction, { once: true });
 
 /* ── Nav ── */
 const nav = document.getElementById('nav');
@@ -1082,7 +1090,9 @@ gsap.from('#amapWrapper', {
 <script>
 /* ── 高德地图 数字临夏 ── */
 (function() {
-  var map = new AMap.Map('amapContainer', {
+  if (typeof AMap === 'undefined') { console.warn('高德地图未加载，跳过地图初始化'); return; }
+  try {
+    var map = new AMap.Map('amapContainer', {
     zoom: 11,
     center: [103.21, 35.60],
     viewMode: '3D',
@@ -1151,11 +1161,7 @@ gsap.from('#amapWrapper', {
       map.setZoomAndCenter(15, [item.poi.lng, item.poi.lat]);
     });
   });
-
-  // Resize
-  window.addEventListener('resize', function() {
-    map.resize();
-  });
+  } catch(e) { console.warn('高德地图初始化失败:', e.message); }
 })();
 </script>
 
@@ -1287,7 +1293,7 @@ gsap.from('#amapWrapper', {
     fetch(DEEPSEEK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_KEY },
-      body: JSON.stringify({ model: 'deepseek-chat', messages: messages, temperature: 0.7, max_tokens: 800 })
+      body: JSON.stringify({ model: 'deepseek-v4-pro', messages: messages, temperature: 0.7, max_tokens: 800 })
     }).then(function(resp) { return resp.json(); })
     .then(function(data) {
       hideTyping();
