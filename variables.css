@@ -1,0 +1,134 @@
+/* ============================================
+   数字临夏 · Digital Linxia — CSS Design Token
+   基于《数字临夏》设计规范文档 第10-13章
+   ============================================ */
+
+:root {
+  /* ── Brand Colors（品牌色） ── */
+  --primary:       #1F6F78;   /* 临夏蓝 Linxia Blue */
+  --primary-hover: #1A5F67;
+  --primary-soft:  #E8F2F4;
+  --secondary:     #D4A64A;   /* 河州金 Hezhou Gold */
+  --secondary-hover:#C09535;
+  --secondary-soft:#FBF5E8;
+  --accent:        #2E8B57;   /* 太子山绿 Taizi Green */
+  --accent-hover:  #257648;
+  --accent-soft:   #EAF5EF;
+
+  /* ── Neutral Colors（中性色） ── */
+  --bg:            #F8F9FA;   /* 页面背景 */
+  --surface:       #FFFFFF;   /* 卡片/模态框背景 */
+  --title:         #1F2937;   /* 一级标题 */
+  --text:          #4B5563;   /* 正文 */
+  --text-secondary:#6B7280;   /* 次级说明 */
+  --border:        #E5E7EB;   /* 分割线/边框 */
+
+  /* ── Functional Colors（功能色） ── */
+  --success:       #22C55E;
+  --warning:       #F59E0B;
+  --error:         #EF4444;
+  --info:          #3B82F6;
+
+  /* ── Gradients（渐变） ── */
+  --gradient-hero:  linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.15), rgba(0,0,0,.55));
+  --gradient-brand: linear-gradient(135deg, #1F6F78, #2E8B57);
+  --gradient-gold:  linear-gradient(135deg, #D4A64A, #E7C76B);
+  --gradient-card:  linear-gradient(180deg, rgba(31,111,120,0), rgba(31,111,120,.06));
+
+  /* ── Typography（字体） ── */
+  --font-cn:    "Source Han Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-en:    "Montserrat", sans-serif;
+  --font-code:  "JetBrains Mono", "Fira Code", monospace;
+
+  --fs-h1:        72px;
+  --fs-h2:        48px;
+  --fs-h3:        32px;
+  --fs-h4:        24px;
+  --fs-body-lg:   18px;
+  --fs-body:      16px;
+  --fs-caption:   14px;
+  --fs-small:     12px;
+
+  --fw-regular:   400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      700;
+
+  --lh-title:     1.2;
+  --lh-body:      1.75;
+  --lh-caption:   1.5;
+  --ls-hero:      0.4em;
+  --ls-title:     0.04em;
+  --ls-tag:       0.1em;
+
+  /* ── Spacing（8pt Grid） ── */
+  --space-1:      8px;
+  --space-2:      16px;
+  --space-3:      24px;
+  --space-4:      32px;
+  --space-5:      48px;
+  --space-6:      64px;
+  --space-7:      80px;
+  --space-8:      120px;
+
+  --section-padding:  var(--space-8);
+  --container-padding: 8%;
+  --card-padding:      var(--space-4);
+  --button-padding-y:  12px;
+  --button-padding-x:  24px;
+  --grid-gap:          var(--space-3);
+
+  /* ── Layout（布局） ── */
+  --container-max:  1200px;
+  --container-wide: 1320px;
+  --nav-height:     72px;
+  --gutter:         24px;
+  --gutter-mobile:  16px;
+
+  /* ── Breakpoints（参考） ── */
+  /* Mobile: <768px  Tablet: 768-991px  Laptop: 992-1199px  Desktop: >=1200px */
+
+  /* ── Border Radius ── */
+  --radius-sm:      8px;
+  --radius:         12px;
+  --radius-lg:      16px;
+  --radius-xl:      24px;
+  --radius-full:    999px;
+
+  /* ── Shadows ── */
+  --shadow-sm:      0 1px 3px rgba(0,0,0,.04);
+  --shadow-md:      0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:      0 10px 30px rgba(0,0,0,.08);
+  --shadow-xl:      0 16px 48px rgba(0,0,0,.10);
+  --shadow-card-hover: 0 12px 36px rgba(31,111,120,.10);
+
+  /* ── Transitions ── */
+  --ease-out:       cubic-bezier(.25,.46,.45,.94);
+  --ease-in-out:    cubic-bezier(.42,0,.58,1);
+  --transition:     0.35s var(--ease-out);
+  --transition-fast: 0.2s var(--ease-out);
+
+  /* ── Glass（毛玻璃） ── */
+  --glass-bg:       rgba(255,255,255,.72);
+  --glass-blur:     blur(18px) saturate(1.4);
+  --glass-border:   rgba(255,255,255,.3);
+}
+
+/* ── Dark Theme（深色模式） ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:            #0F172A;
+    --surface:       #1E293B;
+    --title:         #F8FAFC;
+    --text:          #CBD5E1;
+    --text-secondary:#94A3B8;
+    --border:        #334155;
+    --shadow-sm:     0 1px 3px rgba(0,0,0,.3);
+    --shadow-md:     0 4px 16px rgba(0,0,0,.4);
+    --shadow-lg:     0 10px 30px rgba(0,0,0,.5);
+    --glass-bg:      rgba(15,23,42,.85);
+    --glass-border:  rgba(255,255,255,.08);
+    --primary-soft:  rgba(31,111,120,.2);
+    --secondary-soft:rgba(212,166,74,.15);
+  }
+}
