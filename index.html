@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <script src="https://webapi.amap.com/maps?v=2.0&key=df37acf1a849b7fca4d81b25b6764e07"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -83,11 +82,16 @@ ul{list-style:none}
 .stat-card .num{font-family:var(--font-en);font-size:2rem;font-weight:700;color:var(--gold)}
 .stat-card .label{font-size:.78rem;color:var(--text-dim);margin-top:4px;letter-spacing:.04em}
 
-/* ── ECharts (in Chapter 1) ── */
-.echarts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);margin-top:var(--space-5)}
-.echarts-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.echarts-card h4{font-size:.9rem;color:var(--text);margin-bottom:var(--space-2);text-align:center;font-weight:500;letter-spacing:.04em}
-.echarts-chart{width:100%;height:360px}
+/* ── 节庆倒计时 (in Chapter 1) ── */
+.countdown-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-3);margin-top:var(--space-5)}
+.countdown-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .3s;text-align:center;display:flex;flex-direction:column;gap:10px}
+.countdown-card:hover{transform:translateY(-4px);border-color:var(--gold-soft);box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.countdown-card .festival-name{font-family:var(--font-serif);font-size:.95rem;color:var(--gold);font-weight:600;letter-spacing:.03em}
+.countdown-card .festival-date{font-size:.75rem;color:var(--text-secondary);font-weight:400}
+.countdown-card .festival-desc{font-size:.75rem;color:var(--text-dim);line-height:1.55}
+.countdown-card .countdown-timer{display:inline-flex;align-items:center;gap:6px;margin-top:2px;padding:6px 14px;border-radius:var(--radius-full);background:var(--gold-soft);font-size:.76rem;color:var(--gold);font-weight:600;letter-spacing:.02em;align-self:center}
+.countdown-card .countdown-timer.ongoing{background:rgba(31,111,120,.12);color:var(--teal)}
+.countdown-card .countdown-timer.passed{background:rgba(0,0,0,.04);color:var(--text-dim)}
 
 /* ── Chapter 2: 文化 (Serif) ── */
 .chapter.culture .chapter-title{font-family:var(--font-serif)}
@@ -292,7 +296,7 @@ ul{list-style:none}
   .food-grid{grid-template-columns:repeat(2,1fr)}
   .gallery-grid{grid-template-columns:repeat(3,1fr)}
   .footer-grid{grid-template-columns:repeat(2,1fr)}
-  .echarts-grid{grid-template-columns:1fr}
+  .countdown-grid{grid-template-columns:repeat(3,1fr)}
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .video-card{flex:0 0 260px}
   .contact-grid{grid-template-columns:1fr}
@@ -303,6 +307,7 @@ ul{list-style:none}
   .nav-toggle{display:flex}
   .nav-links.open{display:flex;flex-direction:column;position:fixed;top:var(--nav-height);left:0;right:0;background:rgba(255,255,255,.97);padding:var(--space-2);backdrop-filter:blur(24px);max-height:80vh;overflow-y:auto}
   .nav-links.open .nav-item{padding:12px 16px;border-bottom:1px solid var(--border)}
+  .countdown-grid{grid-template-columns:repeat(2,1fr)}
   .culture-grid,.scenic-grid,.heritage-grid,.guide-grid{grid-template-columns:1fr}
   .food-grid,.gallery-grid{grid-template-columns:repeat(2,1fr)}
   .footer-grid{grid-template-columns:1fr}
@@ -312,6 +317,7 @@ ul{list-style:none}
 }
 @media(max-width:480px){
   .hero-content h1{font-size:2rem}
+  .countdown-grid{grid-template-columns:1fr}
   .food-grid,.gallery-grid{grid-template-columns:1fr}
   .stats-row{grid-template-columns:1fr}
   .ai-chat-panel{width:calc(100vw - 24px);right:12px;bottom:90px;max-height:440px}
@@ -373,7 +379,7 @@ ul{list-style:none}
   </div>
 </section>
 
-<!-- Chapter 1: 河州概览 + ECharts -->
+<!-- Chapter 1: 河州概览 + 节庆倒计时 -->
 <section class="chapter" id="ch1">
   <div class="chapter-inner">
     <div class="chapter-label">Chapter 01</div>
@@ -400,18 +406,36 @@ ul{list-style:none}
       </div>
     </div>
 
-    <div class="echarts-grid">
-      <div class="echarts-card">
-        <h4>年度游客趋势（万人次）</h4>
-        <div class="echarts-chart" id="chartTrend"></div>
+    <div class="countdown-grid" id="countdownGrid">
+      <div class="countdown-card">
+        <div class="festival-name">莲花山花儿会</div>
+        <div class="festival-date">农历六月初一至初六</div>
+        <div class="countdown-timer" id="timer-lianhuashan"></div>
+        <div class="festival-desc">联合国人类非遗代表作，洮岷花儿的年度盛会。每年农历六月在莲花山举行，漫山遍野的花儿歌手即兴对唱，为期六天。</div>
       </div>
-      <div class="echarts-card">
-        <h4>景区热度排行</h4>
-        <div class="echarts-chart" id="chartRank"></div>
+      <div class="countdown-card">
+        <div class="festival-name">开斋节</div>
+        <div class="festival-date">伊斯兰教历10月1日 · 2026年约3月20日</div>
+        <div class="countdown-timer" id="timer-kaizhai"></div>
+        <div class="festival-desc">回族、东乡族、保安族等穆斯林最隆重的节日。沐浴盛装、走亲访友、品尝馓子油香，全城洋溢祥和喜庆。</div>
       </div>
-      <div class="echarts-card">
-        <h4>客源地分布</h4>
-        <div class="echarts-chart" id="chartSource"></div>
+      <div class="countdown-card">
+        <div class="festival-name">古尔邦节</div>
+        <div class="festival-date">伊斯兰教历12月10日 · 2026年约5月28日</div>
+        <div class="countdown-timer" id="timer-gurban"></div>
+        <div class="festival-desc">又称"宰牲节"，穆斯林举行会礼、宰牲待客。体验临夏多元民族文化与美食的绝佳时机。</div>
+      </div>
+      <div class="countdown-card">
+        <div class="festival-name">临夏牡丹文化节</div>
+        <div class="festival-date">每年4月下旬至5月中旬</div>
+        <div class="countdown-timer" id="timer-peony"></div>
+        <div class="festival-desc">临夏是紫斑牡丹重要原产地，栽培历史逾千年。满城牡丹竞放，百里长廊花海如潮，品花茶、赏花韵。</div>
+      </div>
+      <div class="countdown-card">
+        <div class="festival-name">和政古动物化石研讨会</div>
+        <div class="festival-date">每年8月 · 和政县</div>
+        <div class="countdown-timer" id="timer-fossil"></div>
+        <div class="festival-desc">依托六项世界之最的和政古动物化石群，汇聚国内外专家学者探讨史前生态与地质演化，兼具学术与科普价值。</div>
       </div>
     </div>
   </div>
@@ -868,7 +892,7 @@ document.getElementById('heroScroll').addEventListener('click', () => {
 });
 
 /* ── Chapter Scroll Animations ── */
-const animateEls = '.culture-card, .scenic-card, .heritage-card, .food-card, .guide-card, .echarts-card, .stat-card, .gallery-item, .specialty-row';
+const animateEls = '.culture-card, .scenic-card, .heritage-card, .food-card, .guide-card, .countdown-card, .stat-card, .gallery-item, .specialty-row';
 gsap.utils.toArray(animateEls).forEach(el => {
   gsap.from(el, {
     scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
@@ -1049,36 +1073,74 @@ document.querySelectorAll('.video-card').forEach(card => {
   });
 });
 
-/* ── ECharts ── */
+/* ── 节庆倒计时 ── */
 (function() {
-  function initCharts() {
-    const colors = ['#1F6F78','#2E8B57','#D4A64A','#3B82F6','#F59E0B','#A855F7','#EF4444'];
-    const c1 = echarts.init(document.getElementById('chartTrend'));
-    c1.setOption({
-      tooltip:{trigger:'axis',backgroundColor:'rgba(26,26,46,.92)',borderColor:'rgba(255,255,255,.08)',textStyle:{color:'#fff',fontSize:12}},
-      grid:{top:20,right:30,bottom:30,left:50},
-      xAxis:{type:'category',data:['2021','2022','2023','2024','2025'],axisLine:{lineStyle:{color:'rgba(0,0,0,.15)'}},axisLabel:{color:'rgba(0,0,0,.45)'}},
-      yAxis:{type:'value',name:'万人次',nameTextStyle:{color:'rgba(0,0,0,.35)'},axisLine:{show:false},splitLine:{lineStyle:{color:'rgba(0,0,0,.06)'}},axisLabel:{color:'rgba(0,0,0,.4)'}},
-      series:[{data:[480,520,890,1280,1650],type:'line',smooth:true,lineStyle:{color:colors[3],width:3},itemStyle:{color:colors[3]},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(59,130,246,.25)'},{offset:1,color:'rgba(59,130,246,.01)'}])},symbol:'circle',symbolSize:8}]
-    });
-    const rankData = [{name:'八坊十三巷',value:312},{name:'炳灵寺石窟',value:245},{name:'刘家峡水库',value:198},{name:'松鸣岩',value:156},{name:'太子山',value:89},{name:'其他',value:67}].sort((a,b)=>a.value-b.value);
-    const c2 = echarts.init(document.getElementById('chartRank'));
-    c2.setOption({
-      tooltip:{trigger:'axis',axisPointer:{type:'shadow'},backgroundColor:'rgba(26,26,46,.92)',borderColor:'rgba(255,255,255,.08)',textStyle:{color:'#fff',fontSize:12},formatter:p=>p[0].name+'<br/>'+p[0].value+' 万人次'},
-      grid:{top:10,right:40,bottom:20,left:100},
-      xAxis:{type:'value',axisLine:{show:false},splitLine:{lineStyle:{color:'rgba(0,0,0,.06)'}},axisLabel:{color:'rgba(0,0,0,.4)'}},
-      yAxis:{type:'category',data:rankData.map(d=>d.name),axisLine:{lineStyle:{color:'rgba(0,0,0,.15)'}},axisLabel:{color:'rgba(0,0,0,.45)',fontSize:11}},
-      series:[{data:rankData.map(d=>d.value),type:'bar',itemStyle:{borderRadius:[0,4,4,0],color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:colors[0]},{offset:1,color:colors[2]}])},barWidth:18,label:{show:true,position:'right',color:'rgba(0,0,0,.45)',fontSize:10,formatter:'{c}万'}}]
-    });
-    const c3 = echarts.init(document.getElementById('chartSource'));
-    c3.setOption({
-      tooltip:{trigger:'item',backgroundColor:'rgba(26,26,46,.92)',borderColor:'rgba(255,255,255,.08)',textStyle:{color:'#fff',fontSize:12},formatter:'{b}: {c}%'},
-      legend:{bottom:0,textStyle:{color:'rgba(0,0,0,.45)',fontSize:10},itemWidth:8,itemHeight:8},
-      series:[{type:'pie',roseType:'area',radius:['30%','70%'],center:['50%','45%'],data:[{value:38,name:'甘肃',itemStyle:{color:colors[0]}},{value:22,name:'陕西',itemStyle:{color:colors[3]}},{value:15,name:'四川',itemStyle:{color:colors[1]}},{value:10,name:'青海',itemStyle:{color:colors[4]}},{value:8,name:'宁夏',itemStyle:{color:colors[2]}},{value:7,name:'其他',itemStyle:{color:colors[5]}}],label:{color:'rgba(0,0,0,.45)',fontSize:10}}]
-    });
-    window.addEventListener('resize',()=>{c1.resize();c2.resize();c3.resize();});
+  const NOW = new Date();
+  const festivals = [
+    {
+      id: 'lianhuashan',
+      start: new Date(2026, 6, 14),
+      end: new Date(2026, 6, 19),
+      nextStart: new Date(2027, 6, 14),
+      nextEnd: new Date(2027, 6, 19)
+    },
+    {
+      id: 'kaizhai',
+      start: new Date(2026, 2, 20),
+      end: new Date(2026, 2, 22),
+      nextStart: new Date(2027, 2, 11),
+      nextEnd: new Date(2027, 2, 13)
+    },
+    {
+      id: 'gurban',
+      start: new Date(2026, 4, 28),
+      end: new Date(2026, 4, 30),
+      nextStart: new Date(2027, 4, 18),
+      nextEnd: new Date(2027, 4, 20)
+    },
+    {
+      id: 'peony',
+      start: new Date(2026, 3, 20),
+      end: new Date(2026, 4, 15),
+      nextStart: new Date(2027, 3, 20),
+      nextEnd: new Date(2027, 4, 15)
+    },
+    {
+      id: 'fossil',
+      start: new Date(2026, 7, 1),
+      end: new Date(2026, 7, 5),
+      nextStart: new Date(2027, 7, 1),
+      nextEnd: new Date(2027, 7, 5)
+    }
+  ];
+
+  function formatDate(d) {
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
   }
-  ScrollTrigger.create({trigger:'#ch1',start:'top 70%',once:true,onEnter:initCharts});
+
+  function updateAll() {
+    const now = new Date();
+    festivals.forEach(function(f) {
+      var el = document.getElementById('timer-' + f.id);
+      if (!el) return;
+      if (now >= f.start && now <= f.end) {
+        el.textContent = '节庆进行中';
+        el.className = 'countdown-timer ongoing';
+      } else if (now < f.start) {
+        var days = Math.ceil((f.start - now) / 86400000);
+        var prefix = days <= 7 ? '即将开始 · 距开始还有 ' : '距开始还有 ';
+        el.textContent = prefix + days + ' 天';
+        el.className = 'countdown-timer';
+      } else {
+        var d = Math.ceil((f.nextStart - now) / 86400000);
+        el.textContent = '本期已结束 · 下届约 ' + d + ' 天后';
+        el.className = 'countdown-timer passed';
+      }
+    });
+  }
+
+  updateAll();
+  setInterval(updateAll, 60000);
 })();
 
 /* ── AMap ── */
